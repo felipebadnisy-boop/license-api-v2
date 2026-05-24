@@ -3,3 +3,7 @@ uvicorn
 PyJWT
 pydantic
 python-multipart
+requests
+passlib
+bcrypt
+python-jose[cryptography]
