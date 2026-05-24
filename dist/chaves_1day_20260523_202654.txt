@@ -1,0 +1,19 @@
+============================================================
+CHAVES - 1 DIA
+============================================================
+Produto: meu-software
+Plano: 1day
+Quantidade solicitada: 1
+Quantidade gerada: 1
+Data geracao: 23/05/2026 20:26:54
+============================================================
+
+  1. A2CB-51E3-911A-296F
+
+============================================================
+INSTRUCOES:
+------------------------------------------------------------
+1. Distribua essas chaves para seus clientes
+2. O cliente deve ativar no software
+3. O tempo comeca a contar APOS a ativacao!
+============================================================

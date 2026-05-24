@@ -1,0 +1,19 @@
+============================================================
+CHAVES - TESTE RAPIDO (2 MINUTOS)
+============================================================
+Produto: meu-software
+Plano: trial_2min
+Quantidade solicitada: 1
+Quantidade gerada: 1
+Data geracao: 21/05/2026 22:59:56
+============================================================
+
+  1. A4EB-4BB0-1236-7A16
+
+============================================================
+INSTRUCOES:
+------------------------------------------------------------
+1. Distribua essas chaves para seus clientes
+2. O cliente deve ativar no software
+3. O tempo comeca a contar APOS a ativacao!
+============================================================

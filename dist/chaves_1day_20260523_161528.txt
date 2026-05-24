@@ -1,0 +1,19 @@
+============================================================
+CHAVES - 1 DIA
+============================================================
+Produto: meu-software
+Plano: 1day
+Quantidade solicitada: 1
+Quantidade gerada: 1
+Data geracao: 23/05/2026 16:15:28
+============================================================
+
+  1. BCED-B913-01DF-6B8A
+
+============================================================
+INSTRUCOES:
+------------------------------------------------------------
+1. Distribua essas chaves para seus clientes
+2. O cliente deve ativar no software
+3. O tempo comeca a contar APOS a ativacao!
+============================================================

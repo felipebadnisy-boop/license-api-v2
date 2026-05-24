@@ -1,0 +1,7 @@
+2026-05-19 21:41:51,052 - __main__ - WARNING - Continuando sem Redis
+2026-05-19 21:41:51,067 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "C:\Users\Lipee Lipinhuuu\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'

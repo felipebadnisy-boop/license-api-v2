@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Recoil Macro PRO</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #0f0f1a; color: #eee; padding: 20px; }
+        .container { max-width: 1600px; margin: 0 auto; }
+        
+        h1 { text-align: center; margin-bottom: 20px; color: #00ff88; font-size: 28px; }
+        
+        /* Login */
+        .login-container { max-width: 400px; margin: 100px auto; background: #16213e; padding: 30px; border-radius: 10px; text-align: center; }
+        .login-container input { width: 100%; padding: 12px; margin: 10px 0; background: #0f0f1a; border: 1px solid #2a2a4a; color: #fff; border-radius: 5px; }
+        .login-container button { background: #00ff88; color: #0f0f1a; padding: 12px 30px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        
+        /* Stats Grid */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .card { background: #16213e; padding: 15px; border-radius: 10px; text-align: center; border-left: 3px solid #00ff88; }
+        .card h4 { font-size: 12px; color: #888; margin-bottom: 8px; text-transform: uppercase; }
+        .card .value { font-size: 28px; font-weight: bold; color: #00ff88; }
+        
+        .filters { background: #16213e; padding: 15px; border-radius: 10px; margin-bottom: 20px; display: flex; gap: 15px; flex-wrap: wrap; align-items: center; }
+        .filters select, .filters input { background: #0f0f1a; color: #fff; border: 1px solid #2a2a4a; padding: 8px 12px; border-radius: 5px; }
+        .filters button { background: #00ff88; color: #0f0f1a; border: none; padding: 8px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        
+        .table-container { background: #16213e; border-radius: 10px; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #2a2a4a; }
+        th { background: #0f0f1a; color: #00ff88; font-weight: 600; }
+        tr:hover { background: #1a1a3e; }
+        
+        .badge { padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+        .badge-lifetime { background: #ffd700; color: #1a1a2e; }
+        .badge-30days { background: #00ff88; color: #1a1a2e; }
+        .badge-365days { background: #00aaff; color: #1a1a2e; }
+        .badge-expired { background: #ff4444; color: #fff; }
+        
+        .status-online { color: #00ff88; font-weight: bold; }
+        .status-offline { color: #888; }
+        
+        .pagination { display: flex; justify-content: center; gap: 10px; margin-top: 20px; padding: 15px; }
+        .pagination button { background: #16213e; border: 1px solid #2a2a4a; color: #eee; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+        .pagination button:hover { background: #00ff88; color: #0f0f1a; }
+        
+        .logout-btn { background: #ff4444; color: #fff; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-left: 15px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab { background: #16213e; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+        .tab.active { background: #00ff88; color: #0f0f1a; }
+        
+        .footer { text-align: center; margin-top: 30px; padding: 20px; color: #666; font-size: 11px; }
+    </style>
+</head>
+<body>
+    <div id="loginDiv" class="login-container">
+        <h2>🔐 Login Administrativo</h2>
+        <input type="text" id="username" placeholder="Usuário" value="admin">
+        <input type="password" id="password" placeholder="Senha" value="36791788">
+        <button onclick="fazerLogin()">Entrar</button>
+    </div>
+    
+    <div id="dashboardDiv" style="display: none;">
+        <div class="container">
+            <div class="header">
+                <h1>🎯 RECOIL MACRO - DASHBOARD</h1>
+                <button class="logout-btn" onclick="logout()">🚪 Sair</button>
+            </div>
+            
+            <div class="tabs">
+                <div class="tab active" onclick="mudarTab('stats')">📊 Estatísticas</div>
+                <div class="tab" onclick="mudarTab('online')">🟢 Online</div>
+                <div class="tab" onclick="mudarTab('plans')">📦 Planos</div>
+                <div class="tab" onclick="mudarTab('users')">👥 Usuários</div>
+            </div>
+            
+            <div id="tabStats">
+                <div class="stats-grid" id="statsGrid"></div>
+            </div>
+            
+            <div id="tabOnline" style="display: none;">
+                <div class="table-container">
+                    <table id="tabelaOnline">
+                        <thead><tr><th>HWID</th><th>Chave</th><th>Plano</th><th>Último Heartbeat</th></thead>
+                        <tbody id="tbodyOnline"><tr><td colspan="4">Carregando...</td></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="tabPlans" style="display: none;">
+                <div class="stats-grid" id="plansGrid"></div>
+            </div>
+            
+            <div id="tabUsers" style="display: none;">
+                <div class="filters">
+                    <select id="planoFilter">
+                        <option value="">Todos os planos</option>
+                        <option value="trial_2min">2 Minutos</option>
+                        <option value="trial_3h">3 Horas</option>
+                        <option value="1day">1 Dia</option>
+                        <option value="30days">30 Dias</option>
+                        <option value="365days">1 Ano</option>
+                        <option value="lifetime">Vitalício</option>
+                    </select>
+                    <select id="statusFilter">
+                        <option value="">Todos status</option>
+                        <option value="active">Ativo</option>
+                        <option value="expired">Expirado</option>
+                        <option value="revoked">Revogado</option>
+                    </select>
+                    <button onclick="carregarUsuarios()">🔍 Filtrar</button>
+                    <button onclick="carregarUsuarios()">🔄 Atualizar</button>
+                </div>
+                <div class="table-container">
+                    <table id="tabelaUsuarios">
+                        <thead><tr><th>HWID</th><th>Chave</th><th>Plano</th><th>Status</th><th>Online</th><th>Ativada em</th><th>Último Acesso</th><th>Expira em</th></thead>
+                        <tbody id="tbodyUsuarios"><tr><td colspan="8">Carregando...</td></tbody>
+                    </table>
+                </div>
+                <div class="pagination" id="pagination"></div>
+            </div>
+            
+            <div class="footer">
+                <p>Última atualização: <span id="ultimaAtualizacao">-</span></p>
+                <p>Heartbeat timeout: 90 segundos | Dashboard Profissional v3.0</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const API_URL = "https://api.tatidecora.com";
+        let TOKEN = localStorage.getItem("dashboard_token") || "";
+        let currentPage = 1;
+        let currentTab = "stats";
+        let refreshInterval = null;
+        
+        async function fazerLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const response = await fetch(`${API_URL}/admin/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await response.json();
+                if (data.status) {
+                    TOKEN = data.dados.token;
+                    localStorage.setItem("dashboard_token", TOKEN);
+                    document.getElementById('loginDiv').style.display = 'none';
+                    document.getElementById('dashboardDiv').style.display = 'block';
+                    iniciarDashboard();
+                } else {
+                    alert("Credenciais inválidas!");
+                }
+            } catch(e) {
+                alert("Erro ao conectar com a API!");
+            }
+        }
+        
+        function logout() {
+            localStorage.removeItem("dashboard_token");
+            TOKEN = "";
+            if (refreshInterval) clearInterval(refreshInterval);
+            document.getElementById('dashboardDiv').style.display = 'none';
+            document.getElementById('loginDiv').style.display = 'block';
+        }
+        
+        function mudarTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.getElementById('tabStats').style.display = tab === 'stats' ? 'block' : 'none';
+            document.getElementById('tabOnline').style.display = tab === 'online' ? 'block' : 'none';
+            document.getElementById('tabPlans').style.display = tab === 'plans' ? 'block' : 'none';
+            document.getElementById('tabUsers').style.display = tab === 'users' ? 'block' : 'none';
+            
+            if (tab === 'stats') carregarStats();
+            if (tab === 'online') carregarOnline();
+            if (tab === 'plans') carregarPlans();
+            if (tab === 'users') carregarUsuarios();
+        }
+        
+        async function carregarStats() {
+            try {
+                const response = await fetch(`${API_URL}/admin/dashboard/stats`, {
+                    headers: { 'Authorization': `Bearer ${TOKEN}` }
+                });
+                const data = await response.json();
+                if (data.status) {
+                    const s = data.dados;
+                    document.getElementById('statsGrid').innerHTML = `
+                        <div class="card"><h4>Total Licenças</h4><div class="value">${s.total_licencas}</div></div>
+                        <div class="card"><h4>Dispositivos Únicos</h4><div class="value">${s.dispositivos_unicos}</div></div>
+                        <div class="card"><h4>Online Agora</h4><div class="value">${s.online_agora}</div></div>
+                        <div class="card"><h4>Ativos 24h</h4><div class="value">${s.ativos_24h}</div></div>
+                        <div class="card"><h4>Ativos 7d</h4><div class="value">${s.ativos_7d}</div></div>
+                        <div class="card"><h4>Expirando Hoje</h4><div class="value">${s.expirando_hoje}</div></div>
+                        <div class="card"><h4>Expirando 7d</h4><div class="value">${s.expirando_7dias}</div></div>
+                        <div class="card"><h4>Taxa Ativação</h4><div class="value">${s.taxa_ativacao}</div></div>
+                    `;
+                }
+            } catch(e) { console.error(e); }
+        }
+        
+        async function carregarOnline() {
+            try {
+                const response = await fetch(`${API_URL}/admin/dashboard/online`, {
+                    headers: { 'Authorization': `Bearer ${TOKEN}` }
+                });
+                const data = await response.json();
+                if (data.status) {
+                    const tbody = document.getElementById('tbodyOnline');
+                    tbody.innerHTML = '';
+                    data.dados.usuarios.forEach(user => {
+                        tbody.innerHTML += `<tr>
+                            <td><small>${user.hwid}</small></td>
+                            <td><small>${user.chave}</small></td>
+                            <td>${user.plano}</td>
+                            <td><small>${user.ultimo_heartbeat}</small></td>
+                        </tr>`;
+                    });
+                }
+            } catch(e) { console.error(e); }
+        }
+        
+        async function carregarPlans() {
+            try {
+                const response = await fetch(`${API_URL}/admin/dashboard/plans`, {
+                    headers: { 'Authorization': `Bearer ${TOKEN}` }
+                });
+                const data = await response.json();
+                if (data.status) {
+                    let html = '';
+                    for (const [plano, stats] of Object.entries(data.dados)) {
+                        html += `<div class="card">
+                            <h4>${plano}</h4>
+                            <div class="value">${stats.dispositivos_unicos}</div>
+                            <div class="sub">${stats.ativadas}/${stats.total} ativadas</div>
+                            <div class="sub">${stats.taxa_ativacao}</div>
+                        </div>`;
+                    }
+                    document.getElementById('plansGrid').innerHTML = html;
+                }
+            } catch(e) { console.error(e); }
+        }
+        
+        async function carregarUsuarios() {
+            const plano = document.getElementById('planoFilter').value;
+            const status = document.getElementById('statusFilter').value;
+            
+            let url = `${API_URL}/admin/dashboard/users?page=${currentPage}&limit=50`;
+            if (plano) url += `&plano_filter=${plano}`;
+            if (status) url += `&status_filter=${status}`;
+            
+            try {
+                const response = await fetch(url, {
+                    headers: { 'Authorization': `Bearer ${TOKEN}` }
+                });
+                const data = await response.json();
+                if (data.status) {
+                    const tbody = document.getElementById('tbodyUsuarios');
+                    tbody.innerHTML = '';
+                    data.dados.usuarios.forEach(user => {
+                        let badgeClass = '';
+                        if (user.plano === 'lifetime') badgeClass = 'badge-lifetime';
+                        else if (user.plano === '30days') badgeClass = 'badge-30days';
+                        else if (user.plano === '365days') badgeClass = 'badge-365days';
+                        else if (user.tempo_restante === 'Expirada') badgeClass = 'badge-expired';
+                        
+                        tbody.innerHTML += `<tr>
+                            <td><small>${user.hwid}</small></td>
+                            <td><small>${user.chave}</small></td>
+                            <td><span class="badge ${badgeClass}">${user.plano}</span></td>
+                            <td>${user.status}</td>
+                            <td class="${user.online ? 'status-online' : 'status-offline'}">${user.online ? '✅ ONLINE' : '❌ OFFLINE'}</td>
+                            <td><small>${user.ativada_em}</small></td>
+                            <td><small>${user.ultimo_acesso}</small></td>
+                            <td>${user.tempo_restante}</td>
+                        </tr>`;
+                    });
+                    
+                    const pag = data.dados.paginacao;
+                    document.getElementById('pagination').innerHTML = `
+                        <button onclick="mudarPagina(${pag.pagina_atual - 1})" ${pag.pagina_atual === 1 ? 'disabled' : ''}>◀ Anterior</button>
+                        <span>Página ${pag.pagina_atual} de ${pag.total_paginas}</span>
+                        <button onclick="mudarPagina(${pag.pagina_atual + 1})" ${pag.pagina_atual === pag.total_paginas ? 'disabled' : ''}>Próxima ▶</button>
+                    `;
+                }
+            } catch(e) { console.error(e); }
+        }
+        
+        function mudarPagina(novaPagina) {
+            currentPage = novaPagina;
+            carregarUsuarios();
+        }
+        
+        function iniciarDashboard() {
+            if (refreshInterval) clearInterval(refreshInterval);
+            carregarStats();
+            refreshInterval = setInterval(() => {
+                if (currentTab === 'stats') carregarStats();
+                if (currentTab === 'online') carregarOnline();
+                if (currentTab === 'users') carregarUsuarios();
+                document.getElementById('ultimaAtualizacao').innerText = new Date().toLocaleString();
+            }, 30000);
+        }
+        
+        // Verificar token salvo
+        if (TOKEN) {
+            document.getElementById('loginDiv').style.display = 'none';
+            document.getElementById('dashboardDiv').style.display = 'block';
+            iniciarDashboard();
+        }
+    </script>
+</body>
+</html>

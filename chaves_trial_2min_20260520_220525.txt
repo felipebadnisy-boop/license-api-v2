@@ -1,0 +1,19 @@
+============================================================
+CHAVES - TESTE RAPIDO (2 MINUTOS)
+============================================================
+Produto: meu-software
+Plano: trial_2min
+Quantidade solicitada: 1
+Quantidade gerada: 1
+Data geracao: 20/05/2026 22:05:25
+============================================================
+
+  1. DD06-2024-34DD-C267
+
+============================================================
+INSTRUCOES:
+------------------------------------------------------------
+1. Distribua essas chaves para seus clientes
+2. O cliente deve ativar no software
+3. O tempo comeca a contar APOS a ativacao!
+============================================================
